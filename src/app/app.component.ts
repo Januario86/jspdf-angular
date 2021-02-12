@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import * as jsPDF from 'jspdf';
+
 
 @Component({
   selector: 'app-root',
@@ -6,5 +8,28 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'html-to-pdf';
+
+  @ViewChild('content') content: ElementRef;
+
+  public downloadPDF() {
+    console.log('entrei download');
+    let doc = new jsPDF();
+
+    let specialElementHandlers = {
+      '#editor': function (element, renderer) {
+        return true;
+      }
+    };
+
+    let content = this.content.nativeElement;
+
+    doc.fromHTML(content.innerHTML,15,15,{
+      'width': 190,
+      'elementHandlers': specialElementHandlers
+    });
+
+    doc.save('test.pdf');
+  }
+
+ 
 }
